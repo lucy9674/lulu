@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>카스트 제도와 현재의 차별 — 인터랙티브 학습지</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=Noto+Sans+KR:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1a2e;
+  --paper: #faf9f6;
+  --muted: #6b6880;
+  --border: #d8d5cc;
+  --highlight: #f5f0d8;
+  --radius: 8px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Noto Sans KR', sans-serif; background: var(--paper); color: var(--ink); line-height: 1.8; }
+
+/* Header */
+.site-header { background: var(--ink); color: #fff; padding: 2.2rem 2rem 1.8rem; overflow: hidden; position: relative; }
+.site-header::before { content: ''; position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.06); }
+.header-inner { max-width: 900px; margin: 0 auto; position: relative; z-index: 1; }
+.header-kicker { font-size: 11px; letter-spacing: 0.16em; color: rgba(255,255,255,0.4); margin-bottom: 0.5rem; text-transform: uppercase; }
+.header-title { font-family: 'Noto Serif KR', serif; font-size: clamp(1.4rem, 4vw, 2rem); font-weight: 700; line-height: 1.3; margin-bottom: 0.9rem; }
+.header-sub { font-size: 13px; color: rgba(255,255,255,0.45); margin-bottom: 1rem; }
+.header-meta { display: flex; gap: 8px; flex-wrap: wrap; }
+.meta-pill { font-size: 11px; padding: 3px 10px; border: 1px solid rgba(255,255,255,0.18); border-radius: 99px; color: rgba(255,255,255,0.6); }
+
+/* Nav */
+.nav-wrap { background: #fff; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+.nav-scroll { max-width: 900px; margin: 0 auto; display: flex; overflow-x: auto; scrollbar-width: none; }
+.nav-scroll::-webkit-scrollbar { display: none; }
+.nav-tab { flex-shrink: 0; padding: 0.85rem 1.2rem; font-size: 13px; font-weight: 500; color: var(--muted); cursor: pointer; border: none; background: none; border-bottom: 2.5px solid transparent; transition: all 0.2s; white-space: nowrap; font-family: 'Noto Sans KR', sans-serif; }
+.nav-tab:hover { color: var(--ink); }
+.nav-tab.active { color: var(--ink); border-bottom-color: var(--ink); }
+
+/* Progress */
+.prog-wrap { max-width: 900px; margin: 0 auto; padding: 1rem 2rem 0; }
+.prog-track { background: var(--border); height: 3px; border-radius: 99px; overflow: hidden; margin-bottom: 0.35rem; }
+.prog-fill { height: 100%; background: var(--ink); border-radius: 99px; transition: width 0.45s ease; }
+.prog-label { font-size: 11px; color: var(--muted); }
+
+/* Main */
+.main { max-width: 900px; margin: 0 auto; padding: 1.8rem 2rem 3rem; }
+.section { display: none; }
+.section.active { display: block; animation: fi 0.3s ease; }
+@keyframes fi { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; } }
+
+/* Banner */
+.section-banner { border-radius: var(--radius); padding: 1.3rem 1.6rem; margin-bottom: 1.6rem; display: flex; align-items: flex-start; gap: 1rem; }
+.banner-letter { font-family: 'Noto Serif KR', serif; font-size: 2.8rem; font-weight: 700; line-height: 1; opacity: 0.15; flex-shrink: 0; }
+.banner-group { font-size: 11px; letter-spacing: 0.1em; font-weight: 600; margin-bottom: 3px; text-transform: uppercase; }
+.banner-title { font-family: 'Noto Serif KR', serif; font-size: 1.15rem; font-weight: 700; line-height: 1.35; margin-bottom: 3px; }
+.banner-sub { font-size: 12px; opacity: 0.65; }
+.ba { background: #edeafc; color: #2d235a; }
+.bb { background: #e2f0eb; color: #0d3d25; }
+.bc { background: #faeee7; color: #5a2010; }
+.bd { background: #e6f0f8; color: #0d3055; }
+.be { background: #f5e6f0; color: #3d0d28; }
+
+/* Sub label */
+.sub-label { font-size: 11px; letter-spacing: 0.12em; font-weight: 600; color: var(--muted); text-transform: uppercase; margin-bottom: 0.7rem; display: flex; align-items: center; gap: 8px; }
+.sub-label::before { content: ''; display: inline-block; width: 16px; height: 1px; background: var(--muted); }
+
+/* Article */
+.article-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 1.4rem 1.6rem; margin-bottom: 1rem; }
+.article-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 0.8rem; flex-wrap: wrap; }
+.abadge { font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 99px; letter-spacing: 0.04em; }
+.abadge-a { background: #edeafc; color: #2d235a; }
+.abadge-b { background: #e2f0eb; color: #0d3d25; }
+.abadge-c { background: #faeee7; color: #5a2010; }
+.abadge-d { background: #e6f0f8; color: #0d3055; }
+.abadge-e { background: #f5e6f0; color: #3d0d28; }
+.article-source { font-size: 12px; color: var(--muted); font-style: italic; }
+.article-headline { font-family: 'Noto Serif KR', serif; font-size: 1rem; font-weight: 700; margin-bottom: 0.9rem; line-height: 1.4; }
+.article-body { font-size: 14px; line-height: 1.95; color: #252535; }
+.article-body p { margin-bottom: 0.8rem; }
+.article-body p:last-child { margin-bottom: 0; }
+.mk { background: #fef5c7; padding: 0 3px; border-radius: 2px; }
+
+/* Stats */
+.stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+.stat-item { background: var(--paper); border-radius: var(--radius); padding: 0.8rem; text-align: center; }
+.stat-num { font-family: 'Noto Serif KR', serif; font-size: 1.5rem; font-weight: 700; display: block; line-height: 1.2; }
+.stat-desc { font-size: 11px; color: var(--muted); margin-top: 3px; line-height: 1.4; }
+
+/* Vocab */
+.vocab-box { background: var(--highlight); border-left: 3px solid #c8b85a; border-radius: 0 var(--radius) var(--radius) 0; padding: 0.9rem 1.1rem; margin-top: 0.9rem; font-size: 13px; }
+.vocab-title { font-weight: 600; font-size: 11px; color: #7a6a1a; margin-bottom: 5px; }
+.vocab-item { display: flex; gap: 6px; margin-bottom: 3px; }
+.vocab-term { font-weight: 600; flex-shrink: 0; }
+
+/* Q section */
+.q-section { margin-top: 1.8rem; }
+.q-block { margin-bottom: 1.3rem; }
+.q-header { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 0.5rem; }
+.q-num { width: 24px; height: 24px; border-radius: 50%; background: var(--ink); color: #fff; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+.q-num.q1 { background: #4a3f8f; }
+.q-text { font-size: 14px; font-weight: 600; line-height: 1.5; padding-top: 2px; }
+.q-hint { font-size: 12px; color: var(--muted); margin-bottom: 6px; margin-left: 34px; line-height: 1.6; }
+.q-tag { display: inline-block; font-size: 10px; font-weight: 600; letter-spacing: 0.06em; padding: 2px 7px; border-radius: 99px; background: #edeafc; color: #2d235a; margin-left: 34px; margin-bottom: 6px; }
+
+textarea { width: 100%; border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 12px; font-size: 14px; font-family: 'Noto Sans KR', sans-serif; color: var(--ink); background: #fff; resize: vertical; min-height: 90px; line-height: 1.7; transition: border-color 0.2s; }
+textarea:focus { outline: none; border-color: #9993cc; }
+textarea::placeholder { color: #bbb; font-size: 13px; }
+
+/* Summary box (Q1) */
+.summary-q textarea { min-height: 110px; background: #fdfcff; border-color: #ccc9e8; }
+
+/* Choices */
+.choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-bottom: 8px; }
+@media(max-width:520px) { .choice-grid { grid-template-columns: 1fr; } }
+.copt { display: flex; align-items: center; gap: 8px; padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; font-size: 13px; transition: all 0.15s; background: #fff; user-select: none; }
+.copt:hover { background: var(--paper); }
+.copt.sel { background: var(--ink); color: #fff; border-color: var(--ink); }
+.cdot { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid currentColor; flex-shrink: 0; opacity: 0.45; display: flex; align-items: center; justify-content: center; }
+.copt.sel .cdot { opacity: 1; }
+.copt.sel .cdot::after { content: ''; width: 5px; height: 5px; background: #fff; border-radius: 50%; }
+
+/* Nav buttons */
+.nav-buttons { display: flex; align-items: center; gap: 10px; margin-top: 2rem; padding-top: 1.4rem; border-top: 1px solid var(--border); }
+.btn-prev, .btn-next { padding: 9px 18px; border-radius: var(--radius); border: 1px solid var(--border); background: #fff; font-size: 13px; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; color: var(--ink); transition: all 0.15s; }
+.btn-prev:hover { background: var(--paper); }
+.btn-next { background: var(--ink); color: #fff; border-color: var(--ink); margin-left: auto; }
+.btn-next:hover { opacity: 0.85; }
+.page-info { font-size: 12px; color: var(--muted); }
+.saved-tag { font-size: 12px; color: #1a6b4a; opacity: 0; transition: opacity 0.3s; display: flex; align-items: center; gap: 4px; }
+.saved-tag.show { opacity: 1; }
+
+/* Proposal */
+.proposal-wrap { background: var(--ink); border-radius: var(--radius); padding: 1.6rem 1.8rem; margin-bottom: 1.8rem; color: #fff; }
+.proposal-wrap h2 { font-family: 'Noto Serif KR', serif; font-size: 1.3rem; margin-bottom: 5px; }
+.proposal-wrap p { font-size: 13px; color: rgba(255,255,255,0.5); }
+.name-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.4rem; }
+@media(max-width:460px) { .name-row { grid-template-columns: 1fr; } }
+.name-field { background: var(--paper); border: 1px solid var(--border); border-radius: var(--radius); padding: 9px 12px; font-size: 14px; display: flex; align-items: center; gap: 6px; color: var(--muted); }
+.name-field input { border: none; background: none; flex: 1; font-size: 14px; font-family: 'Noto Sans KR', sans-serif; color: var(--ink); }
+.name-field input:focus { outline: none; }
+.prop-item { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 1.1rem 1.3rem; margin-bottom: 1rem; }
+.prop-header { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 0.5rem; }
+.prop-num { width: 26px; height: 26px; border-radius: 50%; background: var(--paper); border: 1px solid var(--border); font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.prop-title { font-size: 14px; font-weight: 600; padding-top: 3px; line-height: 1.45; }
+.prop-hint { font-size: 12px; color: var(--muted); margin-bottom: 7px; }
+.three-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
+.col-box { background: var(--paper); border-radius: var(--radius); padding: 0.8rem 0.9rem; }
+.col-label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 5px; }
+.col-box textarea { min-height: 72px; background: #fff; }
+.share-btn { display: inline-flex; align-items: center; gap: 7px; background: var(--ink); color: #fff; border: none; border-radius: var(--radius); padding: 11px 20px; font-size: 13px; font-weight: 500; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; margin-top: 0.8rem; transition: opacity 0.2s; }
+.share-btn:hover { opacity: 0.82; }
+
+hr { border: none; border-top: 1px solid var(--border); margin: 1.4rem 0; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <p class="header-kicker">역사 · 중학교 2학년 · 1차시</p>
+    <h1 class="header-title">카스트 제도와 현재의 차별</h1>
+    <p class="header-sub">신문 기사를 읽고, 차별의 실체를 파악하고, 해결방안을 제안해보자</p>
+    <div class="header-meta">
+      <span class="meta-pill">모둠 토의·토론</span>
+      <span class="meta-pill">발표·공유</span>
+      <span class="meta-pill">글쓰기 제안서</span>
+      <span class="meta-pill">성취기준 [9역02-01]</span>
+    </div>
+  </div>
+</header>
+
+<nav class="nav-wrap">
+  <div class="nav-scroll">
+    <button class="nav-tab active" onclick="go(0)">A모둠 · 교육 차별</button>
+    <button class="nav-tab" onclick="go(1)">B모둠 · 직업 차별</button>
+    <button class="nav-tab" onclick="go(2)">C모둠 · 결혼·관계</button>
+    <button class="nav-tab" onclick="go(3)">D모둠 · 식수·주거</button>
+    <button class="nav-tab" onclick="go(4)">E모둠 · 디지털 차별</button>
+    <button class="nav-tab" onclick="go(5)">최종 제안서</button>
+  </div>
+</nav>
+
+<div class="prog-wrap">
+  <div class="prog-track"><div class="prog-fill" id="pbar" style="width:16.7%"></div></div>
+  <p class="prog-label" id="plabel">1 / 6 — A모둠: 교육 차별</p>
+</div>
+
+<main class="main">
+
+<!-- ══════════════ A모둠 ══════════════ -->
+<div class="section active" id="sec0">
+  <div class="section-banner ba">
+    <span class="banner-letter">A</span>
+    <div>
+      <p class="banner-group" style="color:#4a3f8f">A 모둠</p>
+      <h2 class="banner-title">교육 차별 — 배움의 권리마저 빼앗기다</h2>
+      <p class="banner-sub">달리트 학생들이 학교에서 겪는 분리와 차별</p>
+    </div>
+  </div>
+
+  <p class="sub-label">카드뉴스 기사 읽기</p>
+  <div class="article-card">
+    <div class="article-meta">
+      <span class="abadge abadge-a">교육 차별</span>
+      <span class="article-source">BBC 인도판 · 2023년 / 인도 국가인권위원회(NHRC) 보고서</span>
+    </div>
+    <h3 class="article-headline">급식 그릇도 따로, 자리도 따로 — 인도 학교 안의 '보이지 않는 선'</h3>
+    <div class="article-body">
+      <p>인도 라자스탄주의 한 공립 초등학교. 점심시간이 되면 교실 안에 보이지 않는 선이 그어진다. <span class="mk">불가촉천민, 이른바 '달리트(Dalit)'</span> 출신 학생들은 한쪽 구석에 따로 앉아야 하고, 다른 학생들과 같은 그릇으로 물을 마실 수 없다. 한 교사는 달리트 아이들이 만진 그릇은 오염됐다며 별도 세척을 강요했다. 인도 국가인권위원회(NHRC)가 2022년 발표한 보고서에 따르면, <span class="mk">농촌 지역 학교의 약 37%에서 카스트에 따른 좌석 분리 또는 배식 차별이 확인됐다.</span></p>
+      <p>인도 헌법 제17조는 1950년부터 불가촉천민 제도를 공식 금지하고 있다. 그러나 차별이 계속되는 이유는 분명하다. 농촌 교사의 상당수가 상위 카스트 출신으로 카스트 위계를 자연스러운 질서로 받아들이기 때문이다. 달리트 학생들이 지속적으로 열등하게 취급받으면 학습 의욕을 잃고 중도에 학교를 그만두게 된다. 실제로 달리트 학생의 중학교 중퇴율은 <span class="mk">전국 평균의 두 배에 가까운 27%</span>에 달한다.</p>
+    </div>
+    <div class="stat-row">
+      <div class="stat-item"><span class="stat-num">27%</span><p class="stat-desc">달리트 학생<br>중학교 중퇴율</p></div>
+      <div class="stat-item"><span class="stat-num">37%</span><p class="stat-desc">농촌 학교 내<br>카스트 차별 확인 비율</p></div>
+      <div class="stat-item"><span class="stat-num">1950년</span><p class="stat-desc">불가촉천민 제도<br>헌법 공식 폐지</p></div>
+    </div>
+    <div class="vocab-box">
+      <p class="vocab-title">📖 어휘 도움말</p>
+      <div class="vocab-item"><span class="vocab-term">달리트(Dalit)</span><span>'짓밟힌 자'라는 뜻. 카스트 최하층 또는 그 아래에 놓인 불가촉천민이 스스로를 부르는 말.</span></div>
+      <div class="vocab-item"><span class="vocab-term">내면화</span><span>어떤 가치나 규범을 당연한 것으로 받아들여 스스로 실천하게 되는 것.</span></div>
+    </div>
+  </div>
+
+  <div class="q-section">
+    <p class="sub-label">생각 질문에 답해보기</p>
+
+    <div class="q-block summary-q">
+      <div class="q-header"><span class="q-num q1">1</span><p class="q-text">기사에서 가장 인상 깊었던 내용은 무엇인가요? 기사의 핵심 내용을 2~3문장으로 요약해봅시다.</p></div>
+      <p class="q-tag">내용 이해 · 요약</p>
+      <p class="q-hint">기사에서 가장 기억에 남는 사실이나 숫자를 하나 고르고, 이 기사가 전달하려는 핵심 메시지를 자신의 말로 써보세요.</p>
+      <textarea id="a1" placeholder="이 기사는 ○○에 대한 내용으로, 가장 인상 깊었던 부분은... 기사의 핵심은..."></textarea>
+    </div>
+
+    <div class="q-block">
+      <div class="q-header"><span class="q-num">2</span><p class="q-text">헌법으로 폐지됐는데도 학교 안에서 차별이 이어지는 이유는 무엇일까요? 기사를 근거로 2가지 이상 제시해보세요.</p></div>
+      <p class="q-hint">법과 실제 사회가 왜 다르게 작동하는지 생각해보세요.</p>
+      <textarea id="a2" placeholder="첫째, 교사 자신이 상위 카스트 출신이어서... 둘째, 피해 학생이 신고해도..."></textarea>
+    </div>
+
+    <div class="q-block">
+      <div class="q-header"><span class="q-num">3</span><p class="q-text">교육 차별이 경제적 불평등으로 이어지는 과정을 논리적으로 설명해보세요.</p></div>
+      <p class="q-hint">'교육 중퇴 → ? → 경제적 격차'의 연결 고리를 직접 채워보세요.</p>
+      <textarea id="a3" placeholder="교육을 제대로 받지 못하면 → 취업 기회가 줄어들고 → ..."></textarea>
+    </div>
+
+    <div class="q-block">
+      <div class="q-header"><span class="q-num">4</span><p class="q-text">이 차별을 해결하기 위해 가장 효과적인 방법은 무엇이라고 생각하나요?</p></div>
+      <div class="choice-grid">
+        <div class="copt" onclick="pick(this,'a4')"><span class="cdot"></span>교사 대상 인권 교육 의무화</div>
+        <div class="copt" onclick="pick(this,'a4')"><span class="cdot"></span>달리트 차별 교사 강력 처벌</div>
+        <div class="copt" onclick="pick(this,'a4')"><span class="cdot"></span>달리트 학생 전용 장학금 확대</div>
+        <div class="copt" onclick="pick(this,'a4')"><span class="cdot"></span>차별 신고 익명 시스템 구축</div>
+      </div>
+      <textarea id="a4r" placeholder="내가 위에서 선택한 방법이 효과적이라고 생각하는 이유는..."></textarea>
+    </div>
+  </div>
+  <div class="nav-buttons">
+    <span class="page-info">1 / 6</span>
+    <span class="saved-tag" id="sv0">✓ 저장됨</span>
+    <button class="btn-next" onclick="go(1)">다음 →</button>
+  </div>
+</div>
+
+<!-- ══════════════ B모둠 ══════════════ -->
+<div class="section" id="sec1">
+  <div class="section-banner bb">
+    <span class="banner-letter">B</span>
+    <div>
+      <p class="banner-group" style="color:#1a6b4a">B 모둠</p>
+      <h2 class="banner-title">직업 차별 — 태어난 신분이 직업을 결정한다</h2>
+      <p class="banner-sub">달리트에게 대물림되는 위험하고 비천한 노동</p>
+    </div>
+  </div>
+
+  <p class="sub-label">카드뉴스 기사 읽기</p>
+  <div class="article-card">
+    <div class="article-meta">
+      <span class="abadge abadge-b">직업 차별</span>
+      <span class="article-source">The Wire India · 2023년 / 인도 사회정의부 보고서</span>
+    </div>
+    <h3 class="article-headline">하수관 속에서 숨진 남자 — 금지된 직업인데 왜 달리트는 아직도 죽어가는가</h3>
+    <div class="article-body">
+      <p>2023년 9월, 인도 델리 외곽의 한 하수처리장에서 세 명의 달리트 남성이 마스크도 안전장비도 없이 하수관 속으로 들어갔다가 유독가스에 질식해 숨졌다. 이른바 <span class="mk">'수동 청소부(Manual Scavengers)'</span>로 불리는 이들의 직업은 2013년 법률로 금지됐다. 그러나 인도 사회정의부의 2023년 보고서에 따르면 <span class="mk">여전히 약 58,000명</span>이 이 일에 종사하고 있으며, 대부분이 달리트다. 이 직업은 배운 것이 아니라 조부모에서 부모로, 부모에서 자녀로 대물림된다.</p>
+      <p>달리트에 대한 직업 차별은 구인 과정에서도 나타난다. 인도 싱크탱크 '아이디어스 포 인디아'가 2020년 발표한 연구에서는 동일한 이력서에 상위 카스트 이름과 달리트 계열 이름을 각각 사용해 기업에 발송했다. 결과는 충격적이었다. <span class="mk">상위 카스트 이름의 이력서가 달리트 이름의 이력서보다 면접 기회를 얻을 확률이 67% 높았다.</span> 이름 하나로 취업의 문이 달라지는 것이다.</p>
+    </div>
+    <div class="stat-row">
+      <div class="stat-item"><span class="stat-num">58,000명</span><p class="stat-desc">법 금지 이후에도<br>수동 청소 종사자 수</p></div>
+      <div class="stat-item"><span class="stat-num">67%</span><p class="stat-desc">상위 카스트 이름<br>이력서 콜백 우위</p></div>
+      <div class="stat-item"><span class="stat-num">2013년</span><p class="stat-desc">수동 청소 직업<br>법률로 공식 금지</p></div>
+    </div>
+    <div class="vocab-box">
+      <p class="vocab-title">📖 어휘 도움말</p>
+      <div class="vocab-item"><span class="vocab-term">수동 청소부</span><span>하수관이나 화장실을 맨손으로 청소하는 직업. 법적으로 금지됐지만 여전히 존재.</span></div>
+      <div class="vocab-item"><span class="vocab-term">구조적 차별</span><span>개인의 의도가 아니라 사회 시스템·관행 자체가 특정 집단을 불리하게 만드는 차별.</span></div>
+    </div>
+  </div>
+
+  <div class="q-section">
+    <p class="sub-label">생각 질문에 답해보기</p>
+
+    <div class="q-block summary-q">
+      <div class="q-header"><span class="q-num q1">1</span><p class="q-text">기사에서 가장 인상 깊었던 내용은 무엇인가요? 기사의 핵심 내용을 2~3문장으로 요약해봅시다.</p></div>
+      <p class="q-tag">내용 이해 · 요약</p>
+      <p class="q-hint">통계 수치나 이력서 실험 중 가장 기억에 남는 내용을 고르고, 이 기사가 전달하는 핵심 문제를 자신의 말로 요약해보세요.</p>
+      <textarea id="b1" placeholder="이 기사는 ○○에 대한 내용으로, 가장 인상 깊었던 부분은... 기사의 핵심은..."></textarea>
+    </div>
+
+    <div class="q-block">
+      <div class="q-header"><span class="q-num">2</span><p class="q-text">법으로 금지된 수동 청소 직업이 2023년에도 58,000명이 종사하는 이유를 설명해보세요.</p></div>
+      <p class="q-hint">법이 있다고 현실이 바뀌지 않는 이유를 구체적으로 써보세요.</p>
+      <textarea id="b2" placeholder="법이 있어도 단속이 이루어지지 않거나, 달리트 당사자가 다른 직업을 구할 수 없는 상황에 놓여 있기 때문에..."></textarea>
+    </div>
+
+    <div class="q-block">
+      <div class="q-header"><span class="q-num">3</span><p class="q-text">이력서 실험 결과는 무엇을 의미하나요? 이것이 '구조적 차별'인 이유를 설명해보세요.</p></div>
+      <textarea id="b3" placeholder="이름(카스트)이라는 태어날 때부터 주어진 조건에 의해 기회가 달라지는 것이기 때문에..."></textarea>
+    </div>
+
+    <div class="q-block">
+      <div class="q-header"><span class="q-num">4</span><p class="q-text">직업 차별의 악순환을 끊으려면 어디서부터 시작해야 할까요?</p></div>
+      <div class="choice-grid">
+        <div class="copt" onclick="pick(this,'b4')"><span class="cdot"></span>교육 기회 평등화가 먼저</div>
+        <div class="copt" onclick="pick(this,'b4')"><span class="cdot"></span>채용 시 카스트 비공개 의무화</div>
+        <div class="copt" onclick="pick(this,'b4')"><span class="cdot"></span>민간기업 할당제 도입</div>
+        <div class="copt" onclick="pick(this,'b4')"><span class="cdot"></span>위험 직종 완전 기계화</div>
+      </div>
+      <textarea id="b4r" placeholder="내가 선택한 이유는..."></textarea>
+    </div>
+  </div>
+  <div class="nav-buttons">
+    <button class="btn-prev" onclick="go(0)">← 이전</button>
+    <span class="page-info">2 / 6</span>
+    <span class="saved-tag" id="sv1">✓ 저장됨</span>
+    <button class="btn-next" onclick="go(2)">다음 →</button>
+  </div>
+</div>
+
+<!-- ══════════════ C모둠 ══════════════ -->
+<div class="section" id="sec2">
+  <div class="section-banner bc">
+    <span class="banner-letter">C</span>
+    <div>
+      <p class="banner-group" style="color:#8f3f1a">C 모둠</p>
+      <h2 class="banner-title">결혼·사회적 관계 — 사랑도 카스트를 넘을 수 없다</h2>
+      <p class="banner-sub">카스트 간 결혼이 목숨을 위협하는 사회</p>
+    </div>
+  </div>
+
+  <p class="sub-label">카드뉴스 기사 읽기</p>
+  <div class="article-card">
+    <div class="article-meta">
+      <span class="abadge abadge-c">결혼·관계 차별</span>
+      <span class="article-source">The Hindu · 2022년 / 인도 국가범죄기록국(NCRB) 데이터</span>
+    </div>
+    <h3 class="article-headline">"우리 카스트에서 결혼해라" — 사랑을 선택했다가 목숨을 잃다</h3>
+    <div class="article-body">
+      <p>2022년 인도 우타르프라데시주. 달리트 출신 21세 청년 아르준(가명)은 상위 카스트 가정의 여성과 결혼을 결심했다. 여성의 가족은 "가문의 명예를 더럽혔다"며 아르준을 집단 폭행했고, 마을 원로들로 구성된 비공식 법정 <span class="mk">'카스트 판차야트(Caste Panchayat)'</span>는 두 사람의 관계를 금지하고 마을을 떠나라고 명령했다. 인도에서 카스트를 넘어선 결혼을 선택한 커플이 가족 또는 공동체에 의해 살해되는 것을 <span class="mk">'명예살인(Honor Killing)'</span>이라 부른다. 인도 대법원은 카스트 판차야트를 불법 기구로 판시했지만 실제 단속은 거의 이루어지지 않는다.</p>
+      <p>결혼을 둘러싼 카스트 압력은 농촌에만 국한되지 않는다. 인도의 대형 결혼정보 사이트들은 아직도 카스트 항목을 기본으로 제공하며, 많은 가정이 혼인 상대를 고를 때 카스트를 최우선 기준으로 삼는다. 실제로 <span class="mk">인도 내 결혼의 90% 이상이 동일 카스트 내에서 이루어지며</span>, 다른 카스트 간 결혼은 전체의 5%에 불과하다. 사회학자들은 이것이 단순한 문화적 전통이 아니라, 재산과 토지를 상위 카스트가 독점하기 위한 경제적 장치라고 분석한다.</p>
+    </div>
+    <div class="stat-row">
+      <div class="stat-item"><span class="stat-num">90%+</span><p class="stat-desc">동일 카스트 내<br>결혼 비율</p></div>
+      <div class="stat-item"><span class="stat-num">5%</span><p class="stat-desc">다른 카스트 간<br>결혼 비율</p></div>
+      <div class="stat-item"><span class="stat-num">매년</span><p class="stat-desc">수십 건 명예살인<br>공식 집계</p></div>
+    </div>
+    <div class="vocab-box">
+      <p class="vocab-title">📖 어휘 도움말</p>
+      <div class="vocab-item"><span class="vocab-term">카스트 판차야트</span><span>마을 원로들로 구성된 비공식 법정. 헌법상 불법이지만 농촌에서 실질적 권위를 행사함.</span></div>
+      <div class="vocab-item"><span class="vocab-term">명예살인</span><span>가문의 '명예'를 지킨다는 명목으로 구성원을 살해하는 행위. 표현 자체가 폭력을 정당화한다는 비판 있음.</span></div>
+    </div>
+  </div>
+
+  <div class="q-section">
+    <p class="sub-label">생각 질문에 답해보기</p>
+
+    <div class="q-block summary-q">
+      <div class="q-header"><span class="q-num q1">1</span><p class="q-text">기사에서 가장 인상 깊었던 내용은 무엇인가요? 기사의 핵심 내용을 2~3문장으로 요약해봅시다.</p></div>
+      <p class="q-tag">내용 이해 · 요약</p>
+      <p class="q-hint">아르준의 사례, 명예살인, 결혼 통계 중 가장 충격적이었던 내용을 고르고, 이 기사가 전달하는 핵심을 정리해보세요.</p>
+      <textarea id="c1" placeholder="이 기사는 ○○에 대한 내용으로, 가장 인상 깊었던 부분은... 기사의 핵심은..."></textarea>
+    </div>
+
+    <div class="q-block">
+      <div class="q-header"><span class="q-num">2</span><p class="q-text">결혼 상대를 카스트로 제한하는 것이 왜 인권 침해인지, 어떤 권리가 침해되는지 설명해보세요.</p></div>
+      <textarea id="c2" placeholder="결혼은 개인이 자유롭게 선택할 수 있는 '혼인의 자유'에 해당하며..."></textarea>
+    </div>
+
+    <div class="q-block">
+      <div class="q-header"><span class="q-num">3</span><p class="q-text">'명예살인'이라는 표현 자체에 문제가 있다고 생각하나요? 이 폭력을 더 정확하게 부를 수 있는 표현도 제안해보세요.</p></div>
+      <textarea id="c3" placeholder="'명예'라는 단어는 폭력 행위를 정당화하는 역할을 한다. 이 행위를 더 정확하게 부른다면..."></textarea>
+    </div>
+
+    <div class="q-block">
+      <div class="q-header"><span class="q-num">4</span><p class="q-text">한국 사회에서도 결혼을 둘러싼 비슷한 편견이 있나요? 있다면 공유해보세요.</p></div>
+      <textarea id="c4" placeholder="한국에서도 학력, 재산, 지역 등을 기준으로 결혼 상대를 제한하는 경우가 있는데..."></textarea>
+    </div>
+  </div>
+  <div class="nav-buttons">
+    <button class="btn-prev" onclick="go(1)">← 이전</button>
+    <span class="page-info">3 / 6</span>
+    <span class="saved-tag" id="sv2">✓ 저장됨</span>
+    <button class="btn-next" onclick="go(3)">다음 →</button>
+  </div>
+</div>
+
+<!-- ══════════════ D모둠 ══════════════ -->
+<div class="section" id="sec3">
+  <div class="section-banner bd">
+    <span class="banner-letter">D</span>
+    <div>
+      <p class="banner-group" style="color:#1a558f">D 모둠</p>
+      <h2 class="banner-title">식수·주거 차별 — 물 한 모금도 허락되지 않는다</h2>
+      <p class="banner-sub">생존의 기본 권리가 카스트에 의해 박탈되다</p>
+    </div>
+  </div>
+
+  <p class="sub-label">카드뉴스 기사 읽기</p>
+  <div class="article-card">
+    <div class="article-meta">
+      <span class="abadge abadge-d">식수·주거 차별</span>
+      <span class="article-source">Al Jazeera · 2023년 / UN 특별보고관 보고서(2022)</span>
+    </div>
+    <h3 class="article-headline">같은 우물, 다른 권리 — 물 한 모금이 폭행의 이유가 되는 마을</h3>
+    <div class="article-body">
+      <p>인도 구자라트주의 한 마을에서 2022년, 달리트 출신 남성이 마을 공동 우물에서 물을 마셨다는 이유로 상위 카스트 주민들에게 집단 폭행을 당했다. 그 우물은 법적으로 누구나 사용할 수 있는 공공 시설이었다. 유엔 특별보고관은 2022년 보고서에서 <span class="mk">달리트 공동체의 식수·위생 접근권 침해가 인도 농촌 전역에서 광범위하게 발생하고 있다</span>고 지적했다. 달리트가 사용하는 우물은 따로 지정되는 경우가 많으며, 상위 카스트 주민과 같은 그릇으로 식사하는 것도 금지된다.</p>
+      <p>주거 차별도 심각하다. 인도 농촌 대부분에서 달리트 가구는 마을 외곽에 분리된 구역인 <span class="mk">'달리트 와다(Dalit Wada)'</span>에 거주한다. 이 구역은 도로·전기·상하수도 등 기반 시설이 열악하며, 달리트 가족이 상위 카스트 거주지 인근 토지를 구매하려 하면 집단으로 저지당하는 사례도 기록돼 있다. 전문가들은 이것이 단순한 인권 문제를 넘어 공중 보건과 경제적 격차에도 직접적인 영향을 미친다고 강조한다. <span class="mk">차별이 차별을 낳는 구조</span>가 형성되는 것이다.</p>
+    </div>
+    <div class="stat-row">
+      <div class="stat-item"><span class="stat-num">40%</span><p class="stat-desc">농촌 달리트 중<br>안전한 식수 미접근 비율</p></div>
+      <div class="stat-item"><span class="stat-num">2억명</span><p class="stat-desc">인도 내<br>달리트 인구 추정</p></div>
+      <div class="stat-item"><span class="stat-num">UN</span><p class="stat-desc">2022년 공식<br>심각한 인권 침해 지적</p></div>
+    </div>
+    <div class="vocab-box">
+      <p class="vocab-title">📖 어휘 도움말</p>
+      <div class="vocab-item"><span class="vocab-term">달리트 와다</span><span>인도 농촌에서 달리트 가구가 모여 사는 마을 외곽 구역. 기반 시설이 부족한 경우가 많음.</span></div>
+      <div class="vocab-item"><span class="vocab-term">유엔 특별보고관</span><span>유엔이 특정 인권 문제를 독립적으로 조사하기 위해 임명한 전문가. 보고서는 국제사회에 공식 제출됨.</span></div>
+    </div>
+  </div>
+
+  <div class="q-section">
+    <p class="sub-label">생각 질문에 답해보기</p>
+
+    <div class="q-block summary-q">
+      <div class="q-header"><span class="q-num q1">1</span><p class="q-text">기사에서 가장 인상 깊었던 내용은 무엇인가요? 기사의 핵심 내용을 2~3문장으로 요약해봅시다.</p></div>
+      <p class="q-tag">내용 이해 · 요약</p>
+      <p class="q-hint">우물 폭행 사건, 달리트 와다, '차별이 차별을 낳는' 구조 중 가장 기억에 남는 내용을 고르고 기사의 핵심을 정리해보세요.</p>
+      <textarea id="d1" placeholder="이 기사는 ○○에 대한 내용으로, 가장 인상 깊었던 부분은... 기사의 핵심은..."></textarea>
+    </div>
+
+    <div class="q-block">
+      <div class="q-header"><span class="q-num">2</span><p class="q-text">물을 마실 권리를 빼앗는 것은 어떤 인권을 침해하는 것인가요? 알고 있는 인권 개념과 연결해 써보세요.</p></div>
+      <textarea id="d2" placeholder="유엔 세계인권선언에는... 물은 생존의 기본 조건이므로..."></textarea>
+    </div>
+
+    <div class="q-block">
+      <div class="q-header"><span class="q-num">3</span><p class="q-text">이 차별은 '개인의 편견'인가요, '구조적 차별'인가요? 둘의 차이를 정의하고 이 사례가 어디에 해당하는지 판단해보세요.</p></div>
+      <textarea id="d3" placeholder="개인적 편견은... 구조적 차별은... 이 사례는 구조적 차별에 해당한다고 생각하는데, 왜냐하면..."></textarea>
+    </div>
+
+    <div class="q-block">
+      <div class="q-header"><span class="q-num">4</span><p class="q-text">국제사회(유엔 등)가 이 문제에 개입하는 것이 옳을까요? 찬반 입장을 모두 정리해보세요.</p></div>
+      <div class="choice-grid">
+        <div class="copt" onclick="pick(this,'d4')"><span class="cdot"></span>찬성 — 인권은 국경을 초월함</div>
+        <div class="copt" onclick="pick(this,'d4')"><span class="cdot"></span>반대 — 각 나라의 내정 문제</div>
+        <div class="copt" onclick="pick(this,'d4')"><span class="cdot"></span>조건부 찬성 — 당사국 요청 시만</div>
+        <div class="copt" onclick="pick(this,'d4')"><span class="cdot"></span>기타 입장</div>
+      </div>
+      <textarea id="d4r" placeholder="내가 선택한 입장의 이유는... 반대 입장에서는..."></textarea>
+    </div>
+  </div>
+  <div class="nav-buttons">
+    <button class="btn-prev" onclick="go(2)">← 이전</button>
+    <span class="page-info">4 / 6</span>
+    <span class="saved-tag" id="sv3">✓ 저장됨</span>
+    <button class="btn-next" onclick="go(4)">다음 →</button>
+  </div>
+</div>
+
+<!-- ══════════════ E모둠 ══════════════ -->
+<div class="section" id="sec4">
+  <div class="section-banner be">
+    <span class="banner-letter">E</span>
+    <div>
+      <p class="banner-group" style="color:#6b1a4a">E 모둠</p>
+      <h2 class="banner-title">디지털 차별 — 인터넷 시대에도 카스트는 살아있다</h2>
+      <p class="banner-sub">SNS와 IT 직장으로 옮겨간 차별의 새로운 얼굴</p>
+    </div>
+  </div>
+
+  <p class="sub-label">카드뉴스 기사 읽기</p>
+  <div class="article-card">
+    <div class="article-meta">
+      <span class="abadge abadge-e">디지털 차별</span>
+      <span class="article-source">Equality Labs 보고서(2020) / The Guardian · 2023년</span>
+    </div>
+    <h3 class="article-headline">실리콘밸리의 카스트 — 첨단 기술 기업도 차별의 성역은 아니었다</h3>
+    <div class="article-body">
+      <p>2020년, 미국 캘리포니아주 정부는 인도 IT 기업 시스코(Cisco)를 상대로 소송을 제기했다. 달리트 출신 인도계 엔지니어가 카스트를 알게 된 동료와 상사에게 조직적 따돌림, 승진 차별, 업무 배제를 당했다고 주장한 것이다. <span class="mk">미국 법정에서 카스트 차별을 이유로 제기된 첫 번째 소송</span>이었다. 인권 단체 이퀄리티 랩스가 2020년 발표한 설문에서는 <span class="mk">달리트 응답자의 3분의 2가 직장 내 카스트 차별을 경험했다</span>고 답했다.</p>
+      <p>온라인 공간에서의 차별도 광범위하다. 인도 소셜미디어에서 달리트 활동가와 학자들은 신상 공개(doxxing), 카스트 비하 댓글, 집단 허위 신고를 통해 조직적 괴롭힘의 표적이 된다. 2023년 미국 캘리포니아주 의회는 카스트를 차별 금지 항목에 추가하는 법안을 통과시켰으나 주지사가 거부권을 행사했다. 전문가들은 <span class="mk">"기술은 중립적이지 않으며, 설계하는 사람의 편견을 담는다"</span>고 경고한다. 알고리즘 억압, 익명 괴롭힘, 채용 AI 편향이라는 보이지 않는 방식으로 차별이 작동하고 있다는 것이다.</p>
+    </div>
+    <div class="stat-row">
+      <div class="stat-item"><span class="stat-num">2/3</span><p class="stat-desc">달리트 응답자 중<br>직장 내 차별 경험</p></div>
+      <div class="stat-item"><span class="stat-num">2020년</span><p class="stat-desc">미국 첫<br>카스트 차별 소송</p></div>
+      <div class="stat-item"><span class="stat-num">2023년</span><p class="stat-desc">캘리포니아 카스트 금지법<br>주지사 거부로 좌절</p></div>
+    </div>
+    <div class="vocab-box">
+      <p class="vocab-title">📖 어휘 도움말</p>
+      <div class="vocab-item"><span class="vocab-term">신상 공개(doxxing)</span><span>특정인의 개인 정보를 허락 없이 온라인에 공개해 위협하는 행위.</span></div>
+      <div class="vocab-item"><span class="vocab-term">알고리즘 억압</span><span>소셜미디어 알고리즘이 특정 콘텐츠의 노출을 줄이거나 계정 영향력을 약화시키는 현상.</span></div>
+    </div>
+  </div>
+
+  <div class="q-section">
+    <p class="sub-label">생각 질문에 답해보기</p>
+
+    <div class="q-block summary-q">
+      <div class="q-header"><span class="q-num q1">1</span><p class="q-text">기사에서 가장 인상 깊었던 내용은 무엇인가요? 기사의 핵심 내용을 2~3문장으로 요약해봅시다.</p></div>
+      <p class="q-tag">내용 이해 · 요약</p>
+      <p class="q-hint">시스코 소송, 달리트 응답자 통계, 기술의 편견 중 가장 기억에 남는 내용을 고르고 이 기사의 핵심 주장을 정리해보세요.</p>
+      <textarea id="e1" placeholder="이 기사는 ○○에 대한 내용으로, 가장 인상 깊었던 부분은... 기사의 핵심은..."></textarea>
+    </div>
+
+    <div class="q-block">
+      <div class="q-header"><span class="q-num">2</span><p class="q-text">인터넷·SNS가 차별을 더 쉽고 광범위하게 만드는 이유를 3가지 써보세요.</p></div>
+      <textarea id="e2" placeholder="첫째, 익명성이 보장되므로..., 둘째, 알고리즘이..., 셋째, 집단이 쉽게 조직화되어..."></textarea>
+    </div>
+
+    <div class="q-block">
+      <div class="q-header"><span class="q-num">3</span><p class="q-text">"기술은 중립적이지 않으며, 설계하는 사람의 편견을 담는다"는 말의 의미를 카스트 차별과 연결지어 설명해보세요.</p></div>
+      <textarea id="e3" placeholder="채용 AI가 주로 상위 카스트 출신이 설계한다면... 알고리즘이 특정 집단의 콘텐츠를 억압하면..."></textarea>
+    </div>
+
+    <div class="q-block">
+      <div class="q-header"><span class="q-num">4</span><p class="q-text">플랫폼 기업(메타, 구글 등)은 카스트 차별 콘텐츠에 어떻게 대응해야 할까요?</p></div>
+      <div class="choice-grid">
+        <div class="copt" onclick="pick(this,'e4')"><span class="cdot"></span>카스트 비하 표현 자동 삭제</div>
+        <div class="copt" onclick="pick(this,'e4')"><span class="cdot"></span>피해자 신고 시 우선 검토</div>
+        <div class="copt" onclick="pick(this,'e4')"><span class="cdot"></span>각국 정부가 별도 규제</div>
+        <div class="copt" onclick="pick(this,'e4')"><span class="cdot"></span>표현의 자유 우선 보호</div>
+      </div>
+      <textarea id="e4r" placeholder="내가 선택한 이유는..."></textarea>
+    </div>
+  </div>
+  <div class="nav-buttons">
+    <button class="btn-prev" onclick="go(3)">← 이전</button>
+    <span class="page-info">5 / 6</span>
+    <span class="saved-tag" id="sv4">✓ 저장됨</span>
+    <button class="btn-next" onclick="go(5)">다음 →</button>
+  </div>
+</div>
+
+<!-- ══════════════ 최종 제안서 ══════════════ -->
+<div class="section" id="sec5">
+  <div class="proposal-wrap">
+    <h2>해결방안 제안서</h2>
+    <p>오늘 읽은 기사를 바탕으로, 가장 충격적인 차별 사례와 나만의 해결방안을 자유롭게 써보세요.</p>
+  </div>
+
+  <div class="name-row">
+    <div class="name-field">이름 <input id="fname" type="text" placeholder="이름을 입력하세요"></div>
+    <div class="name-field">모둠·번호 <input id="fgroup" type="text" placeholder="예) A모둠 3번"></div>
+  </div>
+
+  <div class="prop-item">
+    <div class="prop-header"><span class="prop-num" style="background:var(--ink);color:#fff;width:28px;height:28px;font-size:13px;">✏</span>
+      <p class="prop-title">가장 충격적이었던 차별 사례와 나의 해결방안을 자유롭게 적어보세요.</p>
+    </div>
+    <p class="prop-hint">어떤 사례가 인상 깊었는지, 왜 그런지, 어떻게 해결할 수 있을지 — 자유롭게 써도 됩니다.</p>
+    <textarea id="f1" style="min-height:280px;" placeholder="예) 나는 ○○모둠의 ○○ 사례가 가장 충격적이었다. 왜냐하면...&#10;&#10;이 문제를 해결하기 위해서는..."></textarea>
+  </div>
+
+  <button class="share-btn" onclick="doShare()">↗ 모둠 토의에 공유하기</button>
+
+  <div class="nav-buttons">
+    <button class="btn-prev" onclick="go(4)">← 이전</button>
+    <span class="page-info">6 / 6</span>
+    <span class="saved-tag" id="sv5">✓ 저장됨</span>
+  </div>
+</div>
+
+</main>
+
+<script>
+var cur = 0;
+var labels = ['A모둠: 교육 차별','B모둠: 직업 차별','C모둠: 결혼·관계','D모둠: 식수·주거','E모둠: 디지털 차별','최종 제안서'];
+
+function go(i) {
+  document.getElementById('sec'+cur).classList.remove('active');
+  document.querySelectorAll('.nav-tab')[cur].classList.remove('active');
+  cur = i;
+  document.getElementById('sec'+cur).classList.add('active');
+  document.querySelectorAll('.nav-tab')[cur].classList.add('active');
+  document.getElementById('pbar').style.width = ((cur+1)/6*100).toFixed(1)+'%';
+  document.getElementById('plabel').textContent = (cur+1)+' / 6 — '+labels[cur];
+  window.scrollTo({top:0,behavior:'smooth'});
+  flash(cur);
+}
+
+function pick(el, key) {
+  el.parentElement.querySelectorAll('.copt').forEach(function(c){c.classList.remove('sel');});
+  el.classList.add('sel');
+  flash(cur);
+}
+
+function flash(idx) {
+  var sv = document.getElementById('sv'+idx);
+  if(!sv) return;
+  sv.classList.add('show');
+  clearTimeout(sv._t);
+  sv._t = setTimeout(function(){sv.classList.remove('show');}, 1600);
+}
+
+document.querySelectorAll('textarea, input[type=text]').forEach(function(el){
+  el.addEventListener('input', function(){flash(cur);});
+});
+
+function doShare() {
+  var name = document.getElementById('fname').value.trim() || '학생';
+  var val = document.getElementById('f1').value.trim();
+  if(!val){alert('제안서를 먼저 작성해주세요.');return;}
+  var msg = name+'의 카스트 차별 해결방안 제안서:\n\n'+val+'\n\n이 내용의 논리적 완성도와 실현 가능성에 대해 구체적인 피드백을 해주세요.';
+  if(typeof sendPrompt==='function'){sendPrompt(msg);}
+  else{alert('제안서가 완성됐습니다!\n\n'+msg.substring(0,200)+'...');}
+}
+</script>
+</body>
+</html>
